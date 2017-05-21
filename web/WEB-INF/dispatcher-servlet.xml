@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:avc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/c" xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd  http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+<context:component-scan base-package="net.samron.sambookstore"/>
+
+
+    <!--this will say we are using annotations-->
+    <avc:annotation-driven/>
+
+    <!--this will add the ability to use @Transactional-->
+    <tx:annotation-driven/>
+
+
+    <!--adding resource directory-->
+    <avc:resources mapping="/resources/**" location="/WEB-INF/resources/"/>
+
+
+
+
+
+
+
+
+
+    <!--in here we specify the view resolver and where it should look for views and what it should add
+    as suffix to returning value in @RequestMapping (like index.jsp)-->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+
+
+
+</beans>

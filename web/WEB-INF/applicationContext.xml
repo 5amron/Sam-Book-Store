@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:webflow-config="http://www.springframework.org/schema/webflow-config"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd http://www.springframework.org/schema/webflow-config http://www.springframework.org/schema/webflow-config/spring-webflow-config.xsd">
+
+
+
+<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/hibernatetest"/>
+        <property name="username" value="root"/>
+        <property name="password" value="samronmysql"/>
+        <!--<property name="url" value="jdbc:mysql://us-cdbr-iron-east-04.cleardb.net/heroku_16125c005eccd03?reconnect=true"/>-->
+        <!--<property name="username" value="bc90fb2d11bfb9"/>-->
+        <!--<property name="password" value="6dc44de9"/>-->
+
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.format_sql">false</prop>
+            </props>
+        </property>
+        <property name="packagesToScan">
+            <list>
+                <value>net.samron.sambookstore</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="1024000"/>
+    </bean>
+
+
+
+
+
+    <security:http auto-config="true">
+        <security:intercept-url pattern="/adminmmmmmmmmm/**" access="ROLE_ADMIN"/>
+        <security:intercept-url pattern="/userReged/**" access="ROLE_USER"/>
+        <security:form-login
+                login-page="/"
+                default-target-url="/"
+                authentication-failure-url="/user/logfailed?error"
+                username-parameter="userPhone"
+                password-parameter="userPassword" />
+        <security:logout
+                logout-success-url="/?logout"/>
+    </security:http>
+
+
+
+
+    <bean id="encoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+
+
+    <security:authentication-manager>
+        <security:authentication-provider>
+            <security:password-encoder ref="encoder"/>
+
+            <security:jdbc-user-service data-source-ref="dataSource"
+                                        authorities-by-username-query="SELECT authority_phone, authority From authorities WHERE authority_phone = ?"
+                                        users-by-username-query="SELECT user_phone, user_password, user_enabled FROM users WHERE user_phone = ?"/>
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+
+
+
+
+</beans>
